@@ -1,8 +1,15 @@
+// Set VITE_API_BASE_URL to the full URL of your PHP backend (e.g.
+// https://your-classic-hosting-domain.com/hostinger-api) when the frontend
+// and API are deployed to different domains, as they are on Hostinger's
+// static build/deploy product. Falls back to a same-origin relative path
+// for local dev via the Vite proxy.
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/hostinger-api';
 
 async function request(path, options) {
   const res = await fetch(`${API_BASE}${path}`, {
-    credentials: 'same-origin',
+    // 'include' sends the admin session cookie even on cross-origin requests,
+    // which is required once the frontend and API live on different domains.
+    credentials: 'include',
     ...options,
   });
   const data = await res.json().catch(() => null);

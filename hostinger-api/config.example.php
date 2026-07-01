@@ -14,8 +14,27 @@ define('DB_PASS', 'REPLACE_WITH_YOUR_DB_PASSWORD');
 // Pick a strong password here — this gates access to student data.
 define('ADMIN_PASSWORD', 'REPLACE_WITH_A_STRONG_PASSWORD');
 
+// ---- Frontend origin ----
+// The exact URL your React site is served from (no trailing slash). Since the
+// frontend (Hostinger's static build/deploy) and this API (classic hPanel
+// hosting) live on different domains, the browser needs an explicit origin
+// here — "*" does not work once the admin login relies on session cookies.
+// Example: https://deepskyblue-jackal-392124.hostingersite.com
+define('ALLOWED_ORIGIN', 'REPLACE_WITH_YOUR_FRONTEND_URL');
+
 function start_session_safe() {
     if (session_status() !== PHP_SESSION_ACTIVE) {
+        // SameSite=None (needed for a cross-site fetch to carry the cookie) requires
+        // Secure, which requires real HTTPS — fall back to Lax/non-secure so this
+        // still works over plain http during local testing.
+        $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+        session_set_cookie_params([
+            'lifetime' => 0,
+            'path' => '/',
+            'samesite' => $isHttps ? 'None' : 'Lax',
+            'secure' => $isHttps,
+            'httponly' => true,
+        ]);
         session_start();
     }
 }
@@ -48,9 +67,11 @@ function json_response($data, $code = 200) {
 }
 
 function send_cors_headers() {
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
+    header('Access-Control-Allow-Origin: ' . ALLOWED_ORIGIN);
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Methods: GET, POST, PATCH, DELETE, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type');
+    header('Vary: Origin');
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
         http_response_code(204);
         exit;
