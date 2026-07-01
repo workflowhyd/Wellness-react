@@ -1,16 +1,47 @@
-# React + Vite
+# Glory Wellness Training Institute
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React + Vite + Tailwind + Framer Motion frontend with a small PHP + MySQL
+backend (`hostinger-api/`) for student enquiries, certificate lookup, and
+course management.
 
-Currently, two official plugins are available:
+## Local development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+The bottom-right pill switches between the three views (Landing Page, Admin
+Dashboard, Certificate Search) for local preview.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+To exercise the API locally, run a PHP dev server against `hostinger-api/`
+with a local `config.php` (MySQL, or swap `get_db()` for SQLite for quick
+testing), then it's reachable through Vite's dev proxy at `/hostinger-api`
+(see `vite.config.js`).
 
-## Expanding the Oxlint configuration
+## Deploying to Hostinger via Git
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+1. **Database**: hPanel → Databases → MySQL Databases → create a database +
+   user. Open phpMyAdmin on that database and run `hostinger-api/schema.sql`
+   once.
+2. **Server-only config**: `hostinger-api/config.php` is gitignored on
+   purpose — it holds real DB credentials and the admin password, and must
+   never be committed. Copy `hostinger-api/config.example.php` to
+   `hostinger-api/config.php` **directly on the server** (File Manager or
+   SSH) and fill in real values, including a strong `ADMIN_PASSWORD`.
+3. **hPanel → Git**: point it at this repository, branch `main`, and an
+   Install Path *outside* `public_html` (e.g. `repo`) — the deploy script
+   builds there and copies output into `public_html`, so raw source (and
+   `node_modules`) never sit in the public webroot.
+4. **Deployment script**: paste the contents of `deploy.sh` into the
+   deployment script field, after editing the `PUBLIC_HTML` path at the top
+   to your account's real path.
+5. Push to `main` (or click Deploy in hPanel) — it runs `npm install && npm
+   run build`, then syncs `dist/` into `public_html/` and `hostinger-api/`
+   into `public_html/hostinger-api/` without ever touching the live
+   `config.php`.
+
+If the deployment script fails because Node/npm isn't available in that
+shell, ask for the alternative approach: build in CI (e.g. GitHub Actions)
+and have Hostinger pull an already-built `deploy` branch instead — that
+needs no Node.js on Hostinger's side at all.

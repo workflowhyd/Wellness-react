@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, Loader2 } from 'lucide-react';
+import { searchCertificate } from '../lib/api';
 
 const HEADER_LINKS = ['Home', 'About Us', 'Courses', 'Contact Us'];
 
@@ -15,6 +16,28 @@ const TABLE_COLUMNS = [
 
 export default function CertificateSearch() {
   const [regNo, setRegNo] = useState('');
+  const [status, setStatus] = useState('idle'); // idle | loading | found | empty | error
+  const [result, setResult] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!regNo.trim()) return;
+
+    setStatus('loading');
+    try {
+      const row = await searchCertificate(regNo.trim());
+      if (row) {
+        setResult(row);
+        setStatus('found');
+      } else {
+        setResult(null);
+        setStatus('empty');
+      }
+    } catch {
+      setResult(null);
+      setStatus('error');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white text-slate-800">
@@ -48,7 +71,7 @@ export default function CertificateSearch() {
         {/* ---------------- Search bar ---------------- */}
         <div className="mt-10 flex justify-center">
           <form
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubmit}
             className="flex w-full max-w-md overflow-hidden rounded-full border-2 border-brand-gold shadow-sm"
           >
             <input
@@ -60,12 +83,20 @@ export default function CertificateSearch() {
             />
             <button
               type="submit"
-              className="shrink-0 bg-white px-6 py-3 text-sm font-bold text-brand-green transition-colors hover:bg-slate-50"
+              disabled={status === 'loading'}
+              className="flex shrink-0 items-center gap-2 bg-white px-6 py-3 text-sm font-bold text-brand-green transition-colors hover:bg-slate-50"
             >
+              {status === 'loading' && <Loader2 size={14} className="animate-spin" />}
               Submit
             </button>
           </form>
         </div>
+
+        {status === 'error' && (
+          <p className="mt-4 text-center text-sm text-red-500">
+            Couldn't reach the server. Please try again in a moment.
+          </p>
+        )}
 
         {/* ---------------- Data table ---------------- */}
         <div className="mt-10 overflow-x-auto rounded-md border border-slate-300">
@@ -86,14 +117,26 @@ export default function CertificateSearch() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td
-                  colSpan={TABLE_COLUMNS.length}
-                  className="border border-slate-300 bg-slate-100 py-6 text-center text-slate-500"
-                >
-                  No data available in table
-                </td>
-              </tr>
+              {status === 'found' && result ? (
+                <tr>
+                  <td className="border border-slate-300 px-4 py-3">{result.registration_no}</td>
+                  <td className="border border-slate-300 px-4 py-3">{result.name}</td>
+                  <td className="border border-slate-300 px-4 py-3">{result.dob}</td>
+                  <td className="border border-slate-300 px-4 py-3">{result.guardian_name}</td>
+                  <td className="border border-slate-300 px-4 py-3">{result.course_duration_days}</td>
+                  <td className="border border-slate-300 px-4 py-3">{result.batch}</td>
+                  <td className="border border-slate-300 px-4 py-3">{result.trained_in}</td>
+                </tr>
+              ) : (
+                <tr>
+                  <td
+                    colSpan={TABLE_COLUMNS.length}
+                    className="border border-slate-300 bg-slate-100 py-6 text-center text-slate-500"
+                  >
+                    {status === 'loading' ? 'Searching…' : 'No data available in table'}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

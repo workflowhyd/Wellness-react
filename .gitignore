@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Real DB credentials + admin password live only on the server, never in git
+hostinger-api/config.php
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

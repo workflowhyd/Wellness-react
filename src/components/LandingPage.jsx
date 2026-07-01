@@ -13,6 +13,7 @@ import {
   Award,
   MessageCircle,
 } from 'lucide-react';
+import { submitInquiry } from '../lib/api';
 import './LandingPage.css';
 
 const reveal = {
@@ -201,6 +202,8 @@ export default function LandingPage() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openAcc, setOpenAcc] = useState(0);
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
   const [activeId, setActiveId] = useState('');
   const rootRef = useRef(null);
 
@@ -233,10 +236,23 @@ export default function LandingPage() {
     return () => observer.disconnect();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 5000);
+    setFormError('');
+    const form = e.target;
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    setSubmitting(true);
+    try {
+      await submitInquiry(data);
+      form.reset();
+      setSent(true);
+      setTimeout(() => setSent(false), 5000);
+    } catch (err) {
+      setFormError(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -578,24 +594,24 @@ export default function LandingPage() {
             <div className="form-row">
               <div className="form-group">
                 <label>First Name</label>
-                <input type="text" placeholder="Priya" />
+                <input type="text" name="firstName" placeholder="Priya" required />
               </div>
               <div className="form-group">
                 <label>Last Name</label>
-                <input type="text" placeholder="Reddy" />
+                <input type="text" name="lastName" placeholder="Reddy" />
               </div>
             </div>
             <div className="form-group">
               <label>Phone Number</label>
-              <input type="tel" placeholder="+91 98765 43210" />
+              <input type="tel" name="phone" placeholder="+91 98765 43210" required />
             </div>
             <div className="form-group">
               <label>Email Address</label>
-              <input type="email" placeholder="you@email.com" />
+              <input type="email" name="email" placeholder="you@email.com" />
             </div>
             <div className="form-group">
               <label>Course of Interest</label>
-              <select defaultValue="">
+              <select name="course" defaultValue="">
                 <option value="" disabled>
                   Select a course…
                 </option>
@@ -607,15 +623,15 @@ export default function LandingPage() {
             </div>
             <div className="form-group">
               <label>Message (Optional)</label>
-              <textarea placeholder="Tell us anything that would help us guide you better…" />
+              <textarea name="message" placeholder="Tell us anything that would help us guide you better…" />
             </div>
-            <button
-              type="submit"
-              className="form-submit"
-              disabled={sent}
-              style={sent ? { background: '#16a34a' } : undefined}
-            >
-              {sent ? "✓ Enquiry Sent! We'll call you soon." : 'Send Enquiry →'}
+            {formError && (
+              <p style={{ color: 'var(--crimson)', fontSize: '13px', marginBottom: '14px' }}>
+                {formError}
+              </p>
+            )}
+            <button type="submit" className="form-submit" disabled={submitting || sent} style={sent ? { background: '#16a34a' } : undefined}>
+              {sent ? "✓ Enquiry Sent! We'll call you soon." : submitting ? 'Sending…' : 'Send Enquiry →'}
             </button>
           </motion.form>
         </div>
