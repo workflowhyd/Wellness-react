@@ -119,13 +119,13 @@ export default function CertificateSearch() {
             <tbody>
               {status === 'found' && result ? (
                 <tr>
-                  <td className="border border-slate-300 px-4 py-3">{result.registration_no}</td>
+                  <td className="border border-slate-300 px-4 py-3">{result.registrationNo}</td>
                   <td className="border border-slate-300 px-4 py-3">{result.name}</td>
                   <td className="border border-slate-300 px-4 py-3">{result.dob}</td>
-                  <td className="border border-slate-300 px-4 py-3">{result.guardian_name}</td>
-                  <td className="border border-slate-300 px-4 py-3">{result.course_duration_days}</td>
+                  <td className="border border-slate-300 px-4 py-3">{result.guardianName}</td>
+                  <td className="border border-slate-300 px-4 py-3">{result.courseDurationDays}</td>
                   <td className="border border-slate-300 px-4 py-3">{result.batch}</td>
-                  <td className="border border-slate-300 px-4 py-3">{result.trained_in}</td>
+                  <td className="border border-slate-300 px-4 py-3">{result.trainedIn}</td>
                 </tr>
               ) : (
                 <tr>

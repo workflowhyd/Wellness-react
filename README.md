@@ -1,24 +1,26 @@
 # Glory Wellness Training Institute
 
-React + Vite + Tailwind + Framer Motion frontend with a small PHP + MySQL
-backend (`hostinger-api/`) for student enquiries, certificate lookup, and
+React + Vite + Tailwind + Framer Motion frontend with a small Node/Express +
+MongoDB backend (`server/`) for student enquiries, certificate lookup, and
 course management.
 
-This deploys as **two separate pieces**, on two different Hostinger
-products, on two different domains:
+This deploys as **two separate pieces**, on two different domains:
 
 - **Frontend** — Hostinger's static build/deploy product (imports this repo
-  from GitHub, auto-detects Vite, builds and hosts it on a
-  `*.hostingersite.com` domain or your own).
-- **Backend** (`hostinger-api/`) — classic hPanel shared hosting, which has
-  PHP execution + MySQL. The static build product does not run PHP.
+  from GitHub, auto-detects Vite, builds and hosts it).
+- **Backend** (`server/`) — a Node.js app (on Hostinger's Node.js app hosting,
+  or any other Node host) connected to a MongoDB Atlas database (free M0
+  tier).
 
-Because the two live on different domains, all API calls are cross-origin.
-The code already accounts for this (CORS with a specific allowed origin,
-credentialed fetches, `SameSite=None` session cookies) — you just need to
-fill in the right URLs when configuring each side.
+Because the two live on different domains, API calls are cross-origin. Auth
+uses a JWT bearer token (returned on login, stored in `localStorage`, sent as
+an `Authorization` header) rather than cookies, specifically to sidestep
+cross-site cookie restrictions (`SameSite`, etc.) that come with splitting
+frontend and backend across domains.
 
 ## Local development
+
+Frontend:
 
 ```bash
 npm install
@@ -28,44 +30,64 @@ npm run dev
 The bottom-right pill switches between the three views (Landing Page, Admin
 Dashboard, Certificate Search) for local preview.
 
-To exercise the API locally, run a PHP dev server against `hostinger-api/`
-with a local `config.php` (MySQL, or swap `get_db()` for SQLite for quick
-testing) — it's reachable through Vite's dev proxy at `/hostinger-api` (see
-`vite.config.js`), which keeps local dev same-origin so cookies work without
-HTTPS.
+Backend (needs a MongoDB connection — either a free Atlas cluster, or a local
+MongoDB):
 
-## Deploying the backend (classic hPanel hosting)
+```bash
+cd server
+npm install
+cp .env.example .env   # fill in MONGODB_URI, ADMIN_PASSWORD, JWT_SECRET
+npm start
+```
 
-1. **Database**: hPanel → Databases → MySQL Databases → create a database +
-   user. Open phpMyAdmin on that database and run `hostinger-api/schema.sql`
-   once.
-2. **Server-only config**: `hostinger-api/config.php` is gitignored on
-   purpose — it holds real DB credentials, the admin password, and the
-   allowed frontend origin, and must never be committed. Copy
-   `hostinger-api/config.example.php` to `hostinger-api/config.php`
-   **directly on the server** (File Manager or SSH) and fill in:
-   - `DB_NAME` / `DB_USER` / `DB_PASS`
-   - `ADMIN_PASSWORD` — a strong password
-   - `ALLOWED_ORIGIN` — the exact URL the frontend is deployed at (e.g.
-     `https://deepskyblue-jackal-392124.hostingersite.com`, no trailing
-     slash). This must be exact or the browser will block the admin login.
-3. **hPanel → Git** (on the classic hosting account): point it at this
-   repository, branch `main`, Install Path *outside* `public_html` (e.g.
-   `repo`) so raw source doesn't sit in the webroot.
-4. **Deployment script**: paste in the contents of `deploy.sh`, after
-   editing the `PUBLIC_HTML` path at the top to your account's real path. It
-   just rsyncs `hostinger-api/` into place — no build step, since it's plain
-   PHP.
-5. Push to `main` (or click Deploy in hPanel) to sync.
+With the backend running on port 4000, Vite's dev proxy forwards `/api` calls
+to it automatically (see `vite.config.js`), so the app works locally without
+any extra configuration.
+
+## Deploying the backend
+
+1. **MongoDB Atlas**: create a free M0 cluster at mongodb.com, create a
+   database user, and get the connection string (Atlas → Connect → Drivers).
+   Make sure it includes a database name, e.g.
+   `mongodb+srv://user:pass@cluster0.xxxxx.mongodb.net/glorywellness`.
+2. **Deploy `server/`** as a Node.js app (Hostinger's Node.js app hosting, or
+   any other Node host — Render, Railway, Fly.io all have free tiers). Root
+   directory should point at `server/`, start command `npm start`.
+3. **Environment variables** on that Node app:
+   - `MONGODB_URI` — from step 1
+   - `ADMIN_PASSWORD` — a strong password for the Admin Dashboard login
+   - `JWT_SECRET` — any long random string (see `server/.env.example` for how
+     to generate one); keep it secret
+   - `ALLOWED_ORIGIN` — the exact URL the frontend is deployed at (no
+     trailing slash) — required for CORS
+   - `PORT` — usually injected automatically by the host; only set manually
+     if required
+
+The API creates its own collections and a unique index on
+`certificates.registrationNo` on first boot — no separate schema/migration
+step needed. To seed a certificate for testing, insert a document directly
+into the `certificates` collection via Atlas's UI, e.g.:
+
+```json
+{
+  "registrationNo": "GW2024001",
+  "name": "Priya Reddy",
+  "dob": "1998-04-12",
+  "guardianName": "Suresh Reddy",
+  "courseDurationDays": 45,
+  "batch": "Batch 12",
+  "trainedIn": "Diploma in Spa Therapy"
+}
+```
 
 ## Deploying the frontend (Hostinger static build/deploy)
 
 1. Import this repo, branch `main` — it auto-detects the Vite framework
    preset and default build/output settings, no changes needed there.
 2. **Environment variables**: add `VITE_API_BASE_URL` set to your backend's
-   full URL, e.g. `https://your-classic-hosting-domain.com/hostinger-api`
-   (no trailing slash). Without this, the frontend defaults to a relative
-   `/hostinger-api` path, which only works when both are on the same domain.
+   full URL, e.g. `https://your-node-app-domain.com/api` (no trailing
+   slash). Without this, the frontend defaults to a relative `/api` path,
+   which only works when both are on the same domain.
 3. Deploy. Every push to `main` redeploys automatically.
 
 Once both sides are live, open the deployed frontend, go to Admin Dashboard,

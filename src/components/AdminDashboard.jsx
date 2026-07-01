@@ -321,12 +321,12 @@ export default function AdminDashboard() {
                       {inquiries.map((row) => (
                         <tr key={row.id} className="border-b border-slate-100 last:border-0">
                           <td className="py-3 pr-4 font-medium text-slate-700">
-                            {row.first_name} {row.last_name}
+                            {row.firstName} {row.lastName}
                           </td>
                           <td className="py-3 pr-4 text-slate-500">{row.phone}</td>
                           <td className="py-3 pr-4 text-slate-500">{row.course || '—'}</td>
                           <td className="py-3 pr-4 text-slate-500">
-                            {new Date(row.created_at).toLocaleDateString()}
+                            {new Date(row.createdAt).toLocaleDateString()}
                           </td>
                           <td className="py-3 pr-4">
                             <span
