@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-teal: #0b3d3a;
+  --color-brand-teal-dark: #06211f;
+  --color-brand-green: #4caf7d;
+  --color-brand-green-light: #8fd9b6;
+  --color-brand-orange: #f5821f;
+  --color-brand-maroon: #5c0a1e;
+  --color-brand-gold: #e8b923;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', ui-sans-serif, system-ui, sans-serif;
+}
+
+#root {
+  min-height: 100svh;
+}
