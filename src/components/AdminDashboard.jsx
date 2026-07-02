@@ -4,6 +4,7 @@ import {
   LayoutGrid,
   BookOpen,
   MessagesSquare,
+  GraduationCap as StudentsIcon,
   Settings,
   LogOut,
   Search,
@@ -28,11 +29,15 @@ import {
   login,
   logout,
 } from '../lib/api';
+import CoursesTab from './admin/CoursesTab';
+import InquiriesTab from './admin/InquiriesTab';
+import StudentsTab from './admin/StudentsTab';
 
 const NAV_ITEMS = [
-  { label: 'Dashboard', icon: LayoutGrid, active: true },
+  { label: 'Dashboard', icon: LayoutGrid },
   { label: 'Manage Courses', icon: BookOpen },
   { label: 'Student Inquiries', icon: MessagesSquare },
+  { label: 'Manage Students', icon: StudentsIcon },
   { label: 'Settings', icon: Settings },
 ];
 
@@ -259,6 +264,8 @@ export default function AdminDashboard() {
         </header>
 
         <main className="px-4 py-6 sm:px-8">
+          {active === 'Dashboard' && (
+            <>
           {/* Metrics */}
           <div className="grid gap-4 sm:grid-cols-3">
             {metrics.map(({ label, value, trend, icon: Icon }) => (
@@ -401,6 +408,18 @@ export default function AdminDashboard() {
               )}
             </div>
           </div>
+            </>
+          )}
+
+          {active === 'Manage Courses' && <CoursesTab />}
+          {active === 'Student Inquiries' && <InquiriesTab />}
+          {active === 'Manage Students' && <StudentsTab />}
+          {active === 'Settings' && (
+            <div className="rounded-2xl bg-white p-5 shadow-sm">
+              <h2 className="text-sm font-bold text-slate-800">Settings</h2>
+              <p className="mt-2 text-sm text-slate-500">Nothing configurable here yet.</p>
+            </div>
+          )}
         </main>
       </div>
     </div>

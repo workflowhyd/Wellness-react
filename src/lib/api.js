@@ -40,6 +40,26 @@ export async function searchCertificate(regNo) {
   return call(() => client.query(api.certificates.getByRegistrationNo, { registrationNo: regNo }));
 }
 
+export function fetchStudentOptions() {
+  return call(() => client.query(api.certificates.listForDropdown, {}));
+}
+
+export function fetchStudents() {
+  return call(() => client.query(api.certificates.list, { token: getToken() }));
+}
+
+export function addStudent(student) {
+  return call(() => client.mutation(api.certificates.add, { token: getToken(), ...student }));
+}
+
+export function updateStudent(id, student) {
+  return call(() => client.mutation(api.certificates.update, { token: getToken(), id, ...student }));
+}
+
+export function deleteStudent(id) {
+  return call(() => client.mutation(api.certificates.remove, { token: getToken(), id }));
+}
+
 export function fetchCourses() {
   return call(() => client.query(api.courses.list, { token: getToken() }));
 }

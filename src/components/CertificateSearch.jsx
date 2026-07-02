@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowUpDown, Loader2 } from 'lucide-react';
-import { searchCertificate } from '../lib/api';
-
-const HEADER_LINKS = ['Home', 'About Us', 'Courses', 'Contact Us'];
+import { fetchStudentOptions, searchCertificate } from '../lib/api';
 
 const TABLE_COLUMNS = [
   { label: 'Registration No', sortable: true },
@@ -15,17 +14,28 @@ const TABLE_COLUMNS = [
 ];
 
 export default function CertificateSearch() {
+  const [options, setOptions] = useState([]);
+  const [optionsState, setOptionsState] = useState('loading'); // loading | ready | error
   const [regNo, setRegNo] = useState('');
   const [status, setStatus] = useState('idle'); // idle | loading | found | empty | error
   const [result, setResult] = useState(null);
 
+  useEffect(() => {
+    fetchStudentOptions()
+      .then((rows) => {
+        setOptions(rows);
+        setOptionsState('ready');
+      })
+      .catch(() => setOptionsState('error'));
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!regNo.trim()) return;
+    if (!regNo) return;
 
     setStatus('loading');
     try {
-      const row = await searchCertificate(regNo.trim());
+      const row = await searchCertificate(regNo);
       if (row) {
         setResult(row);
         setStatus('found');
@@ -48,15 +58,9 @@ export default function CertificateSearch() {
             GW
           </div>
           <nav className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
-            {HEADER_LINKS.map((link) => (
-              <a
-                key={link}
-                href="#"
-                className="text-sm font-semibold text-brand-gold transition-colors hover:text-white"
-              >
-                {link}
-              </a>
-            ))}
+            <Link to="/" className="text-sm font-semibold text-brand-gold transition-colors hover:text-white">
+              Home
+            </Link>
           </nav>
         </div>
       </header>
@@ -64,27 +68,40 @@ export default function CertificateSearch() {
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         {/* ---------------- Breadcrumbs ---------------- */}
         <div className="text-sm font-sans font-semibold leading-6 text-indigo-950">
-          <div>Home &lt;</div>
+          <Link to="/">Home &lt;</Link>
           <div>Search</div>
         </div>
 
+        <h1 className="mt-6 text-center text-2xl font-bold text-slate-800">Certificate Verification</h1>
+        <p className="mx-auto mt-2 max-w-lg text-center text-sm text-slate-500">
+          Select your Registration No from the list below to verify and view your certificate details.
+        </p>
+
         {/* ---------------- Search bar ---------------- */}
-        <div className="mt-10 flex justify-center">
+        <div className="mt-8 flex justify-center">
           <form
             onSubmit={handleSubmit}
             className="flex w-full max-w-md overflow-hidden rounded-full border-2 border-brand-gold shadow-sm"
           >
-            <input
-              type="text"
+            <select
               value={regNo}
               onChange={(e) => setRegNo(e.target.value)}
-              placeholder="Enter Register No"
-              className="w-full px-5 py-3 text-sm text-slate-700 outline-none"
-            />
+              disabled={optionsState !== 'ready'}
+              className="w-full bg-white px-5 py-3 text-sm text-slate-700 outline-none disabled:text-slate-400"
+            >
+              <option value="" disabled>
+                {optionsState === 'loading' ? 'Loading registration numbers…' : 'Select Registration No'}
+              </option>
+              {options.map((opt) => (
+                <option key={opt.registrationNo} value={opt.registrationNo}>
+                  {opt.registrationNo} — {opt.name}
+                </option>
+              ))}
+            </select>
             <button
               type="submit"
-              disabled={status === 'loading'}
-              className="flex shrink-0 items-center gap-2 bg-white px-6 py-3 text-sm font-bold text-brand-green transition-colors hover:bg-slate-50"
+              disabled={status === 'loading' || !regNo}
+              className="flex shrink-0 items-center gap-2 bg-white px-6 py-3 text-sm font-bold text-brand-green transition-colors hover:bg-slate-50 disabled:text-slate-300"
             >
               {status === 'loading' && <Loader2 size={14} className="animate-spin" />}
               Submit
@@ -92,6 +109,11 @@ export default function CertificateSearch() {
           </form>
         </div>
 
+        {optionsState === 'error' && (
+          <p className="mt-4 text-center text-sm text-red-500">
+            Couldn't load the registration number list. Please try again in a moment.
+          </p>
+        )}
         {status === 'error' && (
           <p className="mt-4 text-center text-sm text-red-500">
             Couldn't reach the server. Please try again in a moment.

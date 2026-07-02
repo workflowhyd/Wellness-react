@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import {
   Menu,
@@ -236,6 +237,16 @@ export default function LandingPage() {
     return () => observer.disconnect();
   }, []);
 
+  // Scrolls to an in-page section instead of using native `#id` href
+  // navigation, since HashRouter (src/App.jsx) uses the URL hash for
+  // routing — a plain `href="#about"` would be read as a route change,
+  // not an anchor scroll.
+  const scrollToId = (e, id) => {
+    e.preventDefault();
+    setMobileOpen(false);
+    rootRef.current?.querySelector(`#${id}`)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError('');
@@ -270,13 +281,20 @@ export default function LandingPage() {
         <ul className="nav-links">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
-              <a href={link.href} className={activeId === link.href.slice(1) ? 'active' : ''}>
+              <a
+                href={link.href}
+                onClick={(e) => scrollToId(e, link.href.slice(1))}
+                className={activeId === link.href.slice(1) ? 'active' : ''}
+              >
                 {link.label}
               </a>
             </li>
           ))}
           <li>
-            <a href="#contact" className="nav-cta">
+            <Link to="/verify">Verify Certificate</Link>
+          </li>
+          <li>
+            <a href="#contact" onClick={(e) => scrollToId(e, 'contact')} className="nav-cta">
               Enroll Now
             </a>
           </li>
@@ -293,11 +311,14 @@ export default function LandingPage() {
       {mobileOpen && (
         <div className="nav-mobile">
           {NAV_LINKS.map((link) => (
-            <a key={link.href} href={link.href} onClick={() => setMobileOpen(false)}>
+            <a key={link.href} href={link.href} onClick={(e) => scrollToId(e, link.href.slice(1))}>
               {link.label}
             </a>
           ))}
-          <a href="#contact" onClick={() => setMobileOpen(false)}>
+          <Link to="/verify" onClick={() => setMobileOpen(false)}>
+            Verify Certificate
+          </Link>
+          <a href="#contact" onClick={(e) => scrollToId(e, 'contact')}>
             Enroll Now
           </a>
         </div>
@@ -330,10 +351,10 @@ export default function LandingPage() {
           experts with 12+ years of experience.
         </p>
         <div className="hero-btns">
-          <a href="#courses" className="btn-primary">
+          <a href="#courses" onClick={(e) => scrollToId(e, 'courses')} className="btn-primary">
             Explore Courses
           </a>
-          <a href="#contact" className="btn-outline">
+          <a href="#contact" onClick={(e) => scrollToId(e, 'contact')} className="btn-outline">
             Contact Us
           </a>
         </div>
@@ -675,7 +696,9 @@ export default function LandingPage() {
             <ul className="footer-links">
               {FOOTER_LINKS.map((label, i) => (
                 <li key={label}>
-                  <a href={FOOTER_HREFS[i]}>{label}</a>
+                  <a href={FOOTER_HREFS[i]} onClick={(e) => scrollToId(e, FOOTER_HREFS[i].slice(1))}>
+                    {label}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -685,7 +708,9 @@ export default function LandingPage() {
             <ul className="footer-links">
               {FOOTER_COURSES.map((title) => (
                 <li key={title}>
-                  <a href="#courses">{title}</a>
+                  <a href="#courses" onClick={(e) => scrollToId(e, 'courses')}>
+                    {title}
+                  </a>
                 </li>
               ))}
             </ul>
