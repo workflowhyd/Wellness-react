@@ -27,5 +27,4 @@ hostinger-api/config.php
 *.sw?
 
 # Do not commit local env files containing secrets
-server/.env
 .env

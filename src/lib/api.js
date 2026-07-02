@@ -1,29 +1,12 @@
-// Set VITE_API_BASE_URL to the full URL of the Node API (e.g.
-// https://your-node-app.hostingersite.com/api) when the frontend and API are
-// deployed to different domains, as they are on Hostinger's static
-// build/deploy product. Falls back to a same-origin relative path for local
-// dev via the Vite proxy (see vite.config.js).
-function getApiBase() {
-  const configured = import.meta.env.VITE_API_BASE_URL?.trim();
+// Set VITE_CONVEX_URL to this project's Convex deployment URL (e.g.
+// https://happy-animal-123.convex.cloud). `npx convex dev` writes this to a
+// local .env.local automatically for local development; for the Hostinger
+// build it needs to be set explicitly to the production deployment URL.
+import { ConvexHttpClient } from 'convex/browser';
+import { ConvexError } from 'convex/values';
+import { api } from '../../convex/_generated/api';
 
-  if (!configured || /<[^>]+>|node-app-url|your-node-app/i.test(configured)) {
-    return '/api';
-  }
-
-  const normalized = configured.replace(/\/+$/, '');
-
-  if (/^https?:\/\//i.test(normalized)) {
-    return normalized.endsWith('/api') ? normalized : `${normalized}/api`;
-  }
-
-  if (normalized.startsWith('/')) {
-    return normalized.endsWith('/api') ? normalized : `${normalized}/api`;
-  }
-
-  return `/${normalized}`;
-}
-
-const API_BASE = getApiBase();
+const client = new ConvexHttpClient(import.meta.env.VITE_CONVEX_URL);
 
 const TOKEN_KEY = 'gw_admin_token';
 
@@ -36,57 +19,47 @@ function setToken(token) {
   else localStorage.removeItem(TOKEN_KEY);
 }
 
-async function request(path, options = {}) {
-  const token = getToken();
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers: {
-      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
-  });
-  const data = await res.json().catch(() => null);
-  if (!res.ok) {
-    const err = new Error(data?.error || `Request failed (${res.status})`);
-    err.status = res.status;
-    throw err;
+async function call(fn) {
+  try {
+    return await fn();
+  } catch (err) {
+    throw new Error(err instanceof ConvexError ? err.data : err.message);
   }
-  return data;
 }
 
 export function submitInquiry(payload) {
-  return request('/inquiries', { method: 'POST', body: JSON.stringify(payload) });
+  const { firstName, lastName = '', phone, email = '', course = '', message = '' } = payload || {};
+  return call(() => client.mutation(api.inquiries.submit, { firstName, lastName, phone, email, course, message }));
 }
 
 export function fetchInquiries() {
-  return request('/inquiries');
+  return call(() => client.query(api.inquiries.list, { token: getToken() }));
 }
 
 export async function searchCertificate(regNo) {
-  return request(`/certificates/${encodeURIComponent(regNo)}`);
+  return call(() => client.query(api.certificates.getByRegistrationNo, { registrationNo: regNo }));
 }
 
 export function fetchCourses() {
-  return request('/courses');
+  return call(() => client.query(api.courses.list, { token: getToken() }));
 }
 
 export function addCourse(title) {
-  return request('/courses', { method: 'POST', body: JSON.stringify({ title }) });
+  return call(() => client.mutation(api.courses.add, { token: getToken(), title }));
 }
 
 export function updateCourse(id, title) {
-  return request(`/courses/${id}`, { method: 'PATCH', body: JSON.stringify({ title }) });
+  return call(() => client.mutation(api.courses.update, { token: getToken(), id, title }));
 }
 
 export function deleteCourse(id) {
-  return request(`/courses/${id}`, { method: 'DELETE' });
+  return call(() => client.mutation(api.courses.remove, { token: getToken(), id }));
 }
 
 export async function checkSession() {
   if (!getToken()) return { authenticated: false };
   try {
-    return await request('/auth/session');
+    return await call(() => client.query(api.auth.checkSession, { token: getToken() }));
   } catch {
     setToken(null);
     return { authenticated: false };
@@ -94,7 +67,7 @@ export async function checkSession() {
 }
 
 export async function login(password) {
-  const data = await request('/auth/login', { method: 'POST', body: JSON.stringify({ password }) });
+  const data = await call(() => client.mutation(api.auth.login, { password }));
   setToken(data.token);
   return { success: true };
 }
