@@ -1,7 +1,12 @@
 import { lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+// LandingPage is imported eagerly (not lazy) since it's the route almost
+// every visitor lands on directly — lazy-loading it added an extra
+// network round-trip on the critical path and measurably hurt mobile
+// Speed Index. Admin/verify are rarely-visited routes where splitting
+// them out is a clear win with no such downside.
+import LandingPage from './components/LandingPage';
 
-const LandingPage = lazy(() => import('./components/LandingPage'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const CertificateSearch = lazy(() => import('./components/CertificateSearch'));
 
