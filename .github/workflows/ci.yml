@@ -26,12 +26,20 @@ jobs:
       env:
         # Skip optional native bindings that sometimes fail to install in CI
         NPM_CONFIG_OPTIONAL: 'false'
+        # Force building native modules from source in CI
+        NPM_CONFIG_BUILD_FROM_SOURCE: 'true'
 
       - name: Install root dependencies
         run: npm ci
+
+      - name: Rebuild native modules (root)
+        run: npm rebuild --build-from-source || true
 
       - name: Build frontend
         run: npm run build
 
       - name: Install server dependencies
         run: npm ci --prefix server
+
+      - name: Rebuild native modules (server)
+        run: npm rebuild --build-from-source --prefix server || true
