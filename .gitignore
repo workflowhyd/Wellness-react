@@ -25,3 +25,7 @@ hostinger-api/config.php
 *.njsproj
 *.sln
 *.sw?
+
+# Do not commit local env files containing secrets
+server/.env
+.env
