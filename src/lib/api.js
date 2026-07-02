@@ -3,7 +3,27 @@
 // deployed to different domains, as they are on Hostinger's static
 // build/deploy product. Falls back to a same-origin relative path for local
 // dev via the Vite proxy (see vite.config.js).
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
+function getApiBase() {
+  const configured = import.meta.env.VITE_API_BASE_URL?.trim();
+
+  if (!configured || /<[^>]+>|node-app-url|your-node-app/i.test(configured)) {
+    return '/api';
+  }
+
+  const normalized = configured.replace(/\/+$/, '');
+
+  if (/^https?:\/\//i.test(normalized)) {
+    return normalized.endsWith('/api') ? normalized : `${normalized}/api`;
+  }
+
+  if (normalized.startsWith('/')) {
+    return normalized.endsWith('/api') ? normalized : `${normalized}/api`;
+  }
+
+  return `/${normalized}`;
+}
+
+const API_BASE = getApiBase();
 
 const TOKEN_KEY = 'gw_admin_token';
 
