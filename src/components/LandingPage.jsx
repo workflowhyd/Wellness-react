@@ -48,7 +48,7 @@ const ABOUT_FEATURES = [
 const COURSES = [
   {
     badge: 'Popular',
-    image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=500&q=70&fm=webp&auto=format',
     tag: 'Holistic Wellness',
     title: 'Diploma in Ayurveda',
     text: 'Explore Panchakarma, Snehan Karma, holistic living practices, and fundamental Ayurvedic principles. Opens doors as a therapist, nutritionist, or wellness coach.',
@@ -59,7 +59,7 @@ const COURSES = [
     ],
   },
   {
-    image: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=500&q=70&fm=webp&auto=format',
     tag: 'Spa & Therapy',
     title: 'Diploma in Spa Therapy',
     text: 'A blend of Western and oriental spa therapies — Swedish massage to aromatherapy, body wraps, scrubs, and holistic treatments for top spa resorts and cruise lines.',
@@ -69,7 +69,7 @@ const COURSES = [
     ],
   },
   {
-    image: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=500&q=70&fm=webp&auto=format',
     tag: 'Aesthetics',
     title: 'Facial Machine Treatment',
     text: 'Master advanced facial technology, skin analysis, and machine-based treatments. Ideal for building a career in medical aesthetics and high-end beauty salons.',
@@ -79,7 +79,7 @@ const COURSES = [
     ],
   },
   {
-    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&q=70&fm=webp&auto=format',
     tag: 'Makeup Arts',
     title: 'Airbrush Makeup Course',
     text: 'Learn professional airbrush application techniques for bridal, film, and fashion shoots. Includes skin prep, colour theory, and portfolio building.',
@@ -90,7 +90,7 @@ const COURSES = [
   },
   {
     badge: 'New',
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&q=70&fm=webp&auto=format',
     tag: 'Hair Care',
     title: 'Hair Dressing Course',
     text: 'Cutting, colouring, styling, and treatment techniques taught by top stylists. Prepares you for salon management or freelance styling careers.',
@@ -387,8 +387,10 @@ export default function LandingPage() {
           >
             <img
               className="about-img-main"
-              src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&q=80"
+              src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&q=70&fm=webp&auto=format"
               alt="Spa therapy session"
+              loading="lazy"
+              decoding="async"
             />
             <div className="about-img-badge">
               <div className="badge-num">12+</div>
@@ -461,7 +463,13 @@ export default function LandingPage() {
               transition={{ duration: 0.65, ease: 'easeOut', delay: (i % 3) * 0.08 }}
             >
               {course.badge && <span className="course-badge">{course.badge}</span>}
-              <img className="course-card-img" src={course.image} alt={course.title} />
+              <img
+                className="course-card-img"
+                src={course.image}
+                alt={course.title}
+                loading="lazy"
+                decoding="async"
+              />
               <div className="course-card-body">
                 <div className="course-tag">{course.tag}</div>
                 <h3>{course.title}</h3>
