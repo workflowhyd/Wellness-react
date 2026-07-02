@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
       - name: Checkout
@@ -30,7 +30,7 @@ jobs:
         NPM_CONFIG_BUILD_FROM_SOURCE: 'true'
 
       - name: Install root dependencies
-        run: npm ci
+        run: npm ci --no-optional
 
       - name: Rebuild native modules (root)
         run: npm rebuild --build-from-source || true
@@ -39,7 +39,7 @@ jobs:
         run: npm run build
 
       - name: Install server dependencies
-        run: npm ci --prefix server
+        run: npm ci --prefix server --no-optional
 
       - name: Rebuild native modules (server)
         run: npm rebuild --build-from-source --prefix server || true
