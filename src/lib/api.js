@@ -40,10 +40,6 @@ export async function searchCertificate(regNo) {
   return call(() => client.query(api.certificates.getByRegistrationNo, { registrationNo: regNo }));
 }
 
-export function fetchStudentOptions() {
-  return call(() => client.query(api.certificates.listForDropdown, {}));
-}
-
 export function fetchStudents() {
   return call(() => client.query(api.certificates.list, { token: getToken() }));
 }

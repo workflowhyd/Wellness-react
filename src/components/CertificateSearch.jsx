@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowUpDown,
@@ -6,11 +6,11 @@ import {
   ShieldCheck,
   Home as HomeIcon,
   ChevronRight,
-  ChevronDown,
+  Search,
   FileText,
   AlertCircle,
 } from 'lucide-react';
-import { fetchStudentOptions, searchCertificate } from '../lib/api';
+import { searchCertificate } from '../lib/api';
 
 const TABLE_COLUMNS = [
   { label: 'Registration No', sortable: true },
@@ -23,28 +23,18 @@ const TABLE_COLUMNS = [
 ];
 
 export default function CertificateSearch() {
-  const [options, setOptions] = useState([]);
-  const [optionsState, setOptionsState] = useState('loading'); // loading | ready | error
   const [regNo, setRegNo] = useState('');
   const [status, setStatus] = useState('idle'); // idle | loading | found | empty | error
   const [result, setResult] = useState(null);
 
-  useEffect(() => {
-    fetchStudentOptions()
-      .then((rows) => {
-        setOptions(rows);
-        setOptionsState('ready');
-      })
-      .catch(() => setOptionsState('error'));
-  }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!regNo) return;
+    const trimmed = regNo.trim();
+    if (!trimmed) return;
 
     setStatus('loading');
     try {
-      const row = await searchCertificate(regNo);
+      const row = await searchCertificate(trimmed);
       if (row) {
         setResult(row);
         setStatus('found');
@@ -103,7 +93,7 @@ export default function CertificateSearch() {
             Certificate Verification
           </h1>
           <p className="mx-auto mt-3 max-w-lg text-base text-slate-500">
-            Verify your certificate instantly by selecting your Registration Number below.
+            Verify your certificate instantly by entering your Registration Number below.
           </p>
         </div>
 
@@ -114,30 +104,22 @@ export default function CertificateSearch() {
               <label htmlFor="regNo" className="sr-only">
                 Registration Number
               </label>
-              <select
+              <Search
+                size={16}
+                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+              />
+              <input
                 id="regNo"
+                type="text"
                 value={regNo}
                 onChange={(e) => setRegNo(e.target.value)}
-                disabled={optionsState !== 'ready'}
-                className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-10 text-sm text-slate-700 outline-none transition-all duration-200 focus:border-brand-maroon focus:bg-white focus:ring-4 focus:ring-brand-maroon/10 disabled:cursor-not-allowed disabled:text-slate-400"
-              >
-                <option value="" disabled>
-                  {optionsState === 'loading' ? 'Loading registration numbers…' : 'Select Registration No'}
-                </option>
-                {options.map((opt) => (
-                  <option key={opt.registrationNo} value={opt.registrationNo}>
-                    {opt.registrationNo} — {opt.name}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown
-                size={16}
-                className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                placeholder="Enter Registration No"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-10 pr-4 text-sm text-slate-700 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-brand-maroon focus:bg-white focus:ring-4 focus:ring-brand-maroon/10"
               />
             </div>
             <button
               type="submit"
-              disabled={status === 'loading' || !regNo}
+              disabled={status === 'loading' || !regNo.trim()}
               className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-[#84102c] px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-all duration-250 hover:scale-[1.02] hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-maroon/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 sm:w-auto"
             >
               {status === 'loading' && <Loader2 size={16} className="animate-spin" />}
@@ -145,12 +127,6 @@ export default function CertificateSearch() {
             </button>
           </form>
 
-          {optionsState === 'error' && (
-            <p className="mt-4 flex items-center gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
-              <AlertCircle size={16} className="shrink-0" />
-              Couldn't load the registration number list. Please try again in a moment.
-            </p>
-          )}
           {status === 'error' && (
             <p className="mt-4 flex items-center gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
               <AlertCircle size={16} className="shrink-0" />
@@ -220,7 +196,7 @@ export default function CertificateSearch() {
                   </div>
                   <p className="text-base font-semibold text-slate-700">No Certificate Selected</p>
                   <p className="max-w-xs text-sm text-slate-400">
-                    Select a Registration Number above to view certificate details.
+                    Enter a Registration Number above to view certificate details.
                   </p>
                 </>
               )}
