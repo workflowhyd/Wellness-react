@@ -1,6 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpDown, Loader2 } from 'lucide-react';
+import {
+  ArrowUpDown,
+  Loader2,
+  ShieldCheck,
+  Home as HomeIcon,
+  ChevronRight,
+  ChevronDown,
+  FileText,
+  AlertCircle,
+} from 'lucide-react';
 import { fetchStudentOptions, searchCertificate } from '../lib/api';
 
 const TABLE_COLUMNS = [
@@ -50,117 +59,173 @@ export default function CertificateSearch() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-800">
+    <div className="min-h-screen bg-[#F8FAFC] font-[Inter,ui-sans-serif,system-ui,sans-serif] text-slate-800">
       {/* ---------------- Top header ---------------- */}
-      <header className="bg-brand-maroon">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 py-3 sm:flex-row sm:justify-between sm:px-6">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-gold text-sm font-bold text-brand-maroon">
-            GW
+      <header className="sticky top-0 z-10 border-b border-slate-100 bg-white/80 shadow-[0_1px_10px_rgba(0,0,0,0.03)] backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-maroon text-sm font-bold text-brand-gold">
+              GW
+            </div>
+            <span className="hidden text-sm font-semibold leading-tight text-slate-800 sm:block">
+              Glory Wellness
+              <br />
+              Training Institute
+            </span>
           </div>
-          <nav className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
-            <Link to="/" className="text-sm font-semibold text-brand-gold transition-colors hover:text-white">
-              Home
-            </Link>
-          </nav>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-brand-maroon"
+          >
+            <HomeIcon size={15} />
+            Home
+          </Link>
         </div>
       </header>
 
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         {/* ---------------- Breadcrumbs ---------------- */}
-        <div className="text-sm font-sans font-semibold leading-6 text-indigo-950">
-          <Link to="/">Home &lt;</Link>
-          <div>Search</div>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-slate-400">
+          <Link to="/" className="flex items-center gap-1 transition-colors hover:text-brand-maroon">
+            <HomeIcon size={14} />
+            Home
+          </Link>
+          <ChevronRight size={14} className="text-slate-300" />
+          <span className="font-medium text-slate-600">Certificate Verification</span>
+        </nav>
+
+        {/* ---------------- Hero ---------------- */}
+        <div className="mt-10 flex animate-fade-in flex-col items-center text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-maroon/10">
+            <ShieldCheck size={28} className="text-brand-maroon" />
+          </div>
+          <h1 className="mt-5 text-3xl font-bold tracking-tight text-slate-900 sm:text-[36px]">
+            Certificate Verification
+          </h1>
+          <p className="mx-auto mt-3 max-w-lg text-base text-slate-500">
+            Verify your certificate instantly by selecting your Registration Number below.
+          </p>
         </div>
 
-        <h1 className="mt-6 text-center text-2xl font-bold text-slate-800">Certificate Verification</h1>
-        <p className="mx-auto mt-2 max-w-lg text-center text-sm text-slate-500">
-          Select your Registration No from the list below to verify and view your certificate details.
-        </p>
-
-        {/* ---------------- Search bar ---------------- */}
-        <div className="mt-8 flex justify-center">
-          <form
-            onSubmit={handleSubmit}
-            className="flex w-full max-w-md overflow-hidden rounded-full border-2 border-brand-gold shadow-sm"
-          >
-            <select
-              value={regNo}
-              onChange={(e) => setRegNo(e.target.value)}
-              disabled={optionsState !== 'ready'}
-              className="w-full bg-white px-5 py-3 text-sm text-slate-700 outline-none disabled:text-slate-400"
-            >
-              <option value="" disabled>
-                {optionsState === 'loading' ? 'Loading registration numbers…' : 'Select Registration No'}
-              </option>
-              {options.map((opt) => (
-                <option key={opt.registrationNo} value={opt.registrationNo}>
-                  {opt.registrationNo} — {opt.name}
+        {/* ---------------- Search card ---------------- */}
+        <div className="mx-auto mt-10 max-w-2xl animate-fade-in rounded-2xl bg-white p-6 shadow-[0_8px_30px_rgba(0,0,0,0.06)] ring-1 ring-slate-100 transition-shadow duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] sm:p-8">
+          <form onSubmit={handleSubmit} className="flex flex-col items-stretch gap-4 sm:flex-row">
+            <div className="relative flex-1">
+              <label htmlFor="regNo" className="sr-only">
+                Registration Number
+              </label>
+              <select
+                id="regNo"
+                value={regNo}
+                onChange={(e) => setRegNo(e.target.value)}
+                disabled={optionsState !== 'ready'}
+                className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-10 text-sm text-slate-700 outline-none transition-all duration-200 focus:border-brand-maroon focus:bg-white focus:ring-4 focus:ring-brand-maroon/10 disabled:cursor-not-allowed disabled:text-slate-400"
+              >
+                <option value="" disabled>
+                  {optionsState === 'loading' ? 'Loading registration numbers…' : 'Select Registration No'}
                 </option>
-              ))}
-            </select>
+                {options.map((opt) => (
+                  <option key={opt.registrationNo} value={opt.registrationNo}>
+                    {opt.registrationNo} — {opt.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                size={16}
+                className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+              />
+            </div>
             <button
               type="submit"
               disabled={status === 'loading' || !regNo}
-              className="flex shrink-0 items-center gap-2 bg-white px-6 py-3 text-sm font-bold text-brand-green transition-colors hover:bg-slate-50 disabled:text-slate-300"
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-[#84102c] px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-all duration-250 hover:scale-[1.02] hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-maroon/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 sm:w-auto"
             >
-              {status === 'loading' && <Loader2 size={14} className="animate-spin" />}
-              Submit
+              {status === 'loading' && <Loader2 size={16} className="animate-spin" />}
+              {status === 'loading' ? 'Verifying…' : 'Verify Certificate'}
             </button>
           </form>
+
+          {optionsState === 'error' && (
+            <p className="mt-4 flex items-center gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
+              <AlertCircle size={16} className="shrink-0" />
+              Couldn't load the registration number list. Please try again in a moment.
+            </p>
+          )}
+          {status === 'error' && (
+            <p className="mt-4 flex items-center gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
+              <AlertCircle size={16} className="shrink-0" />
+              Couldn't reach the server. Please try again in a moment.
+            </p>
+          )}
         </div>
 
-        {optionsState === 'error' && (
-          <p className="mt-4 text-center text-sm text-red-500">
-            Couldn't load the registration number list. Please try again in a moment.
-          </p>
-        )}
-        {status === 'error' && (
-          <p className="mt-4 text-center text-sm text-red-500">
-            Couldn't reach the server. Please try again in a moment.
-          </p>
-        )}
+        {/* ---------------- Results card ---------------- */}
+        <div className="mx-auto mt-8 max-w-5xl animate-fade-in overflow-hidden rounded-2xl bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)] ring-1 ring-slate-100">
+          <div className="border-b border-slate-100 px-6 py-5 sm:px-8">
+            <h2 className="text-[22px] font-semibold text-slate-900">Certificate Details</h2>
+          </div>
 
-        {/* ---------------- Data table ---------------- */}
-        <div className="mt-10 overflow-x-auto rounded-md border border-slate-300">
-          <table className="w-full min-w-[900px] border-collapse text-left text-sm">
-            <thead>
-              <tr className="bg-slate-100">
-                {TABLE_COLUMNS.map((col) => (
-                  <th
-                    key={col.label}
-                    className="border border-slate-300 px-4 py-3 font-bold text-slate-800"
-                  >
-                    <span className="flex items-center gap-1">
-                      {col.label}
-                      {col.sortable && <ArrowUpDown size={14} className="text-slate-500" />}
-                    </span>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {status === 'found' && result ? (
-                <tr>
-                  <td className="border border-slate-300 px-4 py-3">{result.registrationNo}</td>
-                  <td className="border border-slate-300 px-4 py-3">{result.name}</td>
-                  <td className="border border-slate-300 px-4 py-3">{result.dob}</td>
-                  <td className="border border-slate-300 px-4 py-3">{result.guardianName}</td>
-                  <td className="border border-slate-300 px-4 py-3">{result.courseDurationDays}</td>
-                  <td className="border border-slate-300 px-4 py-3">{result.batch}</td>
-                  <td className="border border-slate-300 px-4 py-3">{result.trainedIn}</td>
-                </tr>
+          {status === 'found' && result ? (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[860px] border-collapse text-left text-sm">
+                <thead>
+                  <tr className="bg-slate-50">
+                    {TABLE_COLUMNS.map((col) => (
+                      <th
+                        key={col.label}
+                        className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-600"
+                      >
+                        <span className="flex items-center gap-1.5">
+                          {col.label}
+                          {col.sortable && <ArrowUpDown size={13} className="text-slate-400" />}
+                        </span>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-t border-slate-100 transition-colors duration-150 hover:bg-slate-50">
+                    <td className="px-5 py-4 font-medium text-slate-800">{result.registrationNo}</td>
+                    <td className="px-5 py-4 text-slate-600">{result.name}</td>
+                    <td className="px-5 py-4 text-slate-600">{result.dob}</td>
+                    <td className="px-5 py-4 text-slate-600">{result.guardianName}</td>
+                    <td className="px-5 py-4 text-slate-600">{result.courseDurationDays}</td>
+                    <td className="px-5 py-4 text-slate-600">{result.batch}</td>
+                    <td className="px-5 py-4 text-slate-600">{result.trainedIn}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-3 px-6 py-16 text-center">
+              {status === 'loading' ? (
+                <>
+                  <Loader2 size={28} className="animate-spin text-brand-maroon/70" />
+                  <p className="text-sm font-medium text-slate-500">Searching…</p>
+                </>
+              ) : status === 'empty' ? (
+                <>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-50">
+                    <AlertCircle size={22} className="text-amber-500" />
+                  </div>
+                  <p className="text-base font-semibold text-slate-700">No Certificate Found</p>
+                  <p className="max-w-xs text-sm text-slate-400">
+                    We couldn't find a certificate for this registration number.
+                  </p>
+                </>
               ) : (
-                <tr>
-                  <td
-                    colSpan={TABLE_COLUMNS.length}
-                    className="border border-slate-300 bg-slate-100 py-6 text-center text-slate-500"
-                  >
-                    {status === 'loading' ? 'Searching…' : 'No data available in table'}
-                  </td>
-                </tr>
+                <>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                    <FileText size={22} className="text-slate-400" />
+                  </div>
+                  <p className="text-base font-semibold text-slate-700">No Certificate Selected</p>
+                  <p className="max-w-xs text-sm text-slate-400">
+                    Select a Registration Number above to view certificate details.
+                  </p>
+                </>
               )}
-            </tbody>
-          </table>
+            </div>
+          )}
         </div>
       </div>
     </div>
