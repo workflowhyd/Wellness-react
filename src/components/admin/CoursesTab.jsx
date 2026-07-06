@@ -47,7 +47,7 @@ export default function CoursesTab() {
         <button
           type="button"
           onClick={handleAddCourse}
-          className="flex items-center gap-2 rounded-lg bg-brand-orange px-4 py-2 text-sm font-semibold text-white shadow-md transition-transform hover:scale-[1.02]"
+          className="flex items-center gap-2 rounded-lg bg-brand-orange px-4 py-2 text-sm font-semibold text-black shadow-md transition-transform hover:scale-[1.02]"
         >
           <Plus size={16} />
           Add New Course

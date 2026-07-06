@@ -1,4 +1,4 @@
-# Glory Wellness Training Institute
+# Skill Training Academy
 
 React + Vite + Tailwind + Framer Motion frontend backed by Convex (hosted
 database + server-side functions) for student enquiries, certificate lookup,
@@ -69,13 +69,13 @@ dashboard's **Data** tab for the production deployment and add a row to the
 
 ```json
 {
-  "registrationNo": "GW2024001",
-  "name": "Priya Reddy",
+  "registrationNo": "STA2024001",
+  "name": "Priya Sharma",
   "dob": "1998-04-12",
-  "guardianName": "Suresh Reddy",
+  "guardianName": "Suresh Sharma",
   "courseDurationDays": 45,
   "batch": "Batch 12",
-  "trainedIn": "Diploma in Spa Therapy"
+  "trainedIn": "Beautician Course"
 }
 ```
 

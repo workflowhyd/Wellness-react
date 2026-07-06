@@ -188,7 +188,7 @@ export default function AdminDashboard() {
           <button
             type="submit"
             disabled={loggingIn || !password}
-            className="mt-4 w-full rounded-lg bg-brand-orange py-3 text-sm font-semibold text-white shadow-md transition-transform hover:scale-[1.01] disabled:opacity-60"
+            className="mt-4 w-full rounded-lg bg-brand-orange py-3 text-sm font-semibold text-black shadow-md transition-transform hover:scale-[1.01] disabled:opacity-60"
           >
             {loggingIn ? 'Signing in…' : 'Sign In'}
           </button>
@@ -203,9 +203,9 @@ export default function AdminDashboard() {
       <aside className="hidden w-64 shrink-0 flex-col bg-brand-teal text-white md:flex">
         <div className="flex items-center gap-3 px-6 py-6">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 font-bold text-brand-green-light">
-            GW
+            S
           </div>
-          <span className="text-lg font-semibold">GW Admin</span>
+          <span className="font-['Cormorant_Garamond',serif] text-lg font-semibold">Skill Training Academy</span>
         </div>
         <nav className="mt-4 flex flex-1 flex-col gap-1 px-3">
           {NAV_ITEMS.map(({ label, icon: Icon }) => (
@@ -253,7 +253,7 @@ export default function AdminDashboard() {
             </div>
             <button type="button" className="relative text-slate-500 hover:text-brand-teal">
               <Bell size={20} />
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-orange text-[10px] font-bold text-white">
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-orange text-[10px] font-bold text-black">
                 3
               </span>
             </button>
@@ -380,7 +380,7 @@ export default function AdminDashboard() {
               <button
                 type="button"
                 onClick={handleAddCourse}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-brand-orange py-2.5 text-sm font-semibold text-white shadow-md transition-transform hover:scale-[1.02]"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-brand-orange py-2.5 text-sm font-semibold text-black shadow-md transition-transform hover:scale-[1.02]"
               >
                 <Plus size={16} />
                 Add New Course

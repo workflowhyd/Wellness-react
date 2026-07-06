@@ -49,23 +49,21 @@ export default function CertificateSearch() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-[Inter,ui-sans-serif,system-ui,sans-serif] text-slate-800">
+    <div className="min-h-screen bg-[#111013] font-[Jost,ui-sans-serif,system-ui,sans-serif] text-slate-100">
       {/* ---------------- Top header ---------------- */}
-      <header className="sticky top-0 z-10 border-b border-slate-100 bg-white/80 shadow-[0_1px_10px_rgba(0,0,0,0.03)] backdrop-blur-md">
+      <header className="sticky top-0 z-10 border-b border-white/10 bg-[#1b191e]/90 shadow-[0_1px_10px_rgba(0,0,0,0.3)] backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-maroon text-sm font-bold text-brand-gold">
-              GW
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-teal text-sm font-bold text-brand-gold">
+              S
             </div>
-            <span className="hidden text-sm font-semibold leading-tight text-slate-800 sm:block">
-              Glory Wellness
-              <br />
-              Training Institute
+            <span className="hidden font-[\'Cormorant_Garamond\',serif] text-base font-semibold leading-tight text-white sm:block">
+              Skill Training Academy
             </span>
           </div>
           <Link
             to="/"
-            className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-brand-maroon"
+            className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white/70 transition-colors duration-200 hover:bg-white/10 hover:text-brand-gold"
           >
             <HomeIcon size={15} />
             Home
@@ -75,13 +73,13 @@ export default function CertificateSearch() {
 
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         {/* ---------------- Breadcrumbs ---------------- */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-slate-400">
-          <Link to="/" className="flex items-center gap-1 transition-colors hover:text-brand-maroon">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-white/50">
+          <Link to="/" className="flex items-center gap-1 transition-colors hover:text-brand-gold">
             <HomeIcon size={14} />
             Home
           </Link>
-          <ChevronRight size={14} className="text-slate-300" />
-          <span className="font-medium text-slate-600">Certificate Verification</span>
+          <ChevronRight size={14} className="text-white/30" />
+          <span className="font-medium text-white/80">Certificate Verification</span>
         </nav>
 
         {/* ---------------- Hero ---------------- */}
@@ -89,10 +87,10 @@ export default function CertificateSearch() {
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-maroon/10">
             <ShieldCheck size={28} className="text-brand-maroon" />
           </div>
-          <h1 className="mt-5 text-3xl font-bold tracking-tight text-slate-900 sm:text-[36px]">
+          <h1 className="mt-5 font-[\'Cormorant_Garamond\',serif] text-4xl font-semibold tracking-tight text-white sm:text-[40px]">
             Certificate Verification
           </h1>
-          <p className="mx-auto mt-3 max-w-lg text-base text-slate-500">
+          <p className="mx-auto mt-3 max-w-lg text-base text-white/60">
             Verify your certificate instantly by entering your Registration Number below.
           </p>
         </div>
@@ -120,7 +118,7 @@ export default function CertificateSearch() {
             <button
               type="submit"
               disabled={status === 'loading' || !regNo.trim()}
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-maroon to-[#84102c] px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-all duration-250 hover:scale-[1.02] hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-maroon/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 sm:w-auto"
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-brand-gold px-6 py-3.5 text-sm font-semibold text-black shadow-sm transition-all duration-250 hover:scale-[1.02] hover:bg-brand-green-light hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-maroon/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 sm:w-auto"
             >
               {status === 'loading' && <Loader2 size={16} className="animate-spin" />}
               {status === 'loading' ? 'Verifying…' : 'Verify Certificate'}

@@ -157,7 +157,7 @@ function StudentFormModal({ initial, onClose, onSaved }) {
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 rounded-lg bg-brand-orange px-4 py-2 text-sm font-semibold text-white shadow-md transition-transform hover:scale-[1.02] disabled:opacity-60"
+            className="flex items-center gap-2 rounded-lg bg-brand-orange px-4 py-2 text-sm font-semibold text-black shadow-md transition-transform hover:scale-[1.02] disabled:opacity-60"
           >
             {saving && <Loader2 size={14} className="animate-spin" />}
             {isEdit ? 'Save Changes' : 'Add Student'}
@@ -220,7 +220,7 @@ export default function StudentsTab() {
           <button
             type="button"
             onClick={() => setModal('add')}
-            className="flex items-center justify-center gap-2 rounded-lg bg-brand-orange px-4 py-2 text-sm font-semibold text-white shadow-md transition-transform hover:scale-[1.02]"
+            className="flex items-center justify-center gap-2 rounded-lg bg-brand-orange px-4 py-2 text-sm font-semibold text-black shadow-md transition-transform hover:scale-[1.02]"
           >
             <Plus size={16} />
             Add Student
