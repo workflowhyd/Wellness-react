@@ -9,6 +9,7 @@ import LandingPage from './components/LandingPage';
 
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const CertificateSearch = lazy(() => import('./components/CertificateSearch'));
+const CourseDetail = lazy(() => import('./components/CourseDetail'));
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Suspense fallback={null}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/courses/:slug" element={<CourseDetail />} />
             <Route path="/verify" element={<CertificateSearch />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="*" element={<Navigate to="/" replace />} />

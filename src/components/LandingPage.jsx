@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import {
   Menu,
@@ -13,12 +13,15 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import { submitInquiry } from '../lib/api';
+import { COURSES } from '../lib/coursesData';
 import './LandingPage.css';
 
 const reveal = {
   hidden: { opacity: 0, y: 30 },
   show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: 'easeOut' } },
 };
+
+const MotionLink = motion.create(Link);
 
 const NAV_LINKS = [
   { href: '#about', label: 'About' },
@@ -75,59 +78,6 @@ const ABOUT_FEATURES = [
   'Career support for jobs, freelancing and starting your own salon',
   'Flexible weekday and weekend batches',
   'Recognized certificate on course completion',
-];
-
-const COURSES = [
-  {
-    badge: 'Popular',
-    image: 'https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=500&q=70&fm=webp&auto=format',
-    tag: 'Salon Services',
-    title: 'Beautician Course',
-    text: 'Skin care, facials, threading, waxing and complete salon services taught hands-on from day one.',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500&q=70&fm=webp&auto=format',
-    tag: 'Makeup Arts',
-    title: 'Advanced Makeup Artistry',
-    text: 'Bridal, party, HD and airbrush makeup techniques for professional artists.',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&q=70&fm=webp&auto=format',
-    tag: 'Hair Care',
-    title: 'Hair Styling & Care',
-    text: 'Cutting, styling, colouring and hair treatments with live practice on real models.',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=500&q=70&fm=webp&auto=format',
-    tag: 'Aesthetics',
-    title: 'Skin & Cosmetology',
-    text: 'Skin analysis, treatments and advanced cosmetology techniques for glowing results.',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=500&q=70&fm=webp&auto=format',
-    tag: 'Spa & Therapy',
-    title: 'Spa & Wellness Therapy',
-    text: 'Body massage, aromatherapy and wellness therapies for a career in top spas and resorts.',
-  },
-  {
-    badge: 'New',
-    image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=500&q=70&fm=webp&auto=format',
-    tag: 'Nail Art',
-    title: 'Nail Art & Extensions',
-    text: 'Trending nail art, gel extensions and complete nail care techniques.',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1600721391689-2564bb8055de?w=500&q=70&fm=webp&auto=format',
-    tag: 'Mehendi Art',
-    title: 'Mehendi Art',
-    text: 'Traditional and modern bridal mehendi with a booking-ready portfolio.',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=500&q=70&fm=webp&auto=format',
-    tag: 'Complete Diploma',
-    title: 'Complete Diploma',
-    text: 'Beauty, makeup, hair and wellness combined into one career-ready diploma.',
-  },
 ];
 
 const WHY_ITEMS = [
@@ -281,9 +231,23 @@ export default function LandingPage() {
   const [activeId, setActiveId] = useState('');
   const [selectedCourse, setSelectedCourse] = useState(COURSES[0].title);
   const rootRef = useRef(null);
+  const location = useLocation();
 
   const hero = useSlider(HERO_SLIDES.length, 6000);
   const testi = useSlider(TESTIMONIALS.length, 7000);
+
+  // Hand-off from a course detail page's "Enroll Now" button (see
+  // CourseDetail.jsx), which navigates here with this state instead of
+  // duplicating the enquiry form on every course page.
+  useEffect(() => {
+    if (location.state?.course) setSelectedCourse(location.state.course);
+    if (location.state?.scrollTo) {
+      requestAnimationFrame(() => {
+        rootRef.current?.querySelector(`#${location.state.scrollTo}`)?.scrollIntoView();
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const ids = NAV_LINKS.map((l) => l.href.slice(1)).concat('contact');
@@ -311,11 +275,6 @@ export default function LandingPage() {
     e.preventDefault();
     setMobileOpen(false);
     rootRef.current?.querySelector(`#${id}`)?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleCourseCardClick = (title) => {
-    setSelectedCourse(title);
-    rootRef.current?.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleSubmit = async (e) => {
@@ -556,14 +515,10 @@ export default function LandingPage() {
         </motion.div>
         <div className="courses-grid">
           {COURSES.map((course, i) => (
-            <motion.a
+            <MotionLink
               className="course-card"
-              href="#contact"
+              to={`/courses/${course.slug}`}
               key={course.title}
-              onClick={(e) => {
-                e.preventDefault();
-                handleCourseCardClick(course.title);
-              }}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.12 }}
@@ -583,7 +538,7 @@ export default function LandingPage() {
                 <p>{course.text}</p>
                 <span className="view">View Course</span>
               </div>
-            </motion.a>
+            </MotionLink>
           ))}
         </div>
       </section>
