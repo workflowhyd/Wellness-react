@@ -25,4 +25,11 @@ export default defineSchema({
   courses: defineTable({
     title: v.string(),
   }),
+
+  // Singleton — at most one row. Falls back to the ADMIN_PASSWORD env var
+  // in convex/auth.js until the first password change creates this row,
+  // since env vars can't be updated from a mutation at runtime.
+  adminAuth: defineTable({
+    passwordHash: v.string(),
+  }),
 });

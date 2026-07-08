@@ -43,3 +43,17 @@ export const list = query({
     }));
   },
 });
+
+const VALID_STATUSES = ["Pending", "Approved", "Rejected"];
+
+export const setStatus = mutation({
+  args: { token: v.optional(v.string()), id: v.id("inquiries"), status: v.string() },
+  handler: async (ctx, { token, id, status }) => {
+    await requireAdmin(token);
+    if (!VALID_STATUSES.includes(status)) {
+      throw new ConvexError("Invalid status");
+    }
+    await ctx.db.patch(id, { status });
+    return { success: true };
+  },
+});

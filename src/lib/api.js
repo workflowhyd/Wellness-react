@@ -36,6 +36,10 @@ export function fetchInquiries() {
   return call(() => client.query(api.inquiries.list, { token: getToken() }));
 }
 
+export function updateInquiryStatus(id, status) {
+  return call(() => client.mutation(api.inquiries.setStatus, { token: getToken(), id, status }));
+}
+
 export async function searchCertificate(regNo) {
   return call(() => client.query(api.certificates.getByRegistrationNo, { registrationNo: regNo }));
 }
@@ -91,4 +95,10 @@ export async function login(password) {
 export function logout() {
   setToken(null);
   return Promise.resolve({ success: true });
+}
+
+export function changePassword(oldPassword, newPassword) {
+  return call(() =>
+    client.mutation(api.auth.changePassword, { token: getToken(), oldPassword, newPassword })
+  );
 }

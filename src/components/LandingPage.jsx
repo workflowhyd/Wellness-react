@@ -431,7 +431,7 @@ export default function LandingPage() {
       </div>
 
       {/* ---------------- About ---------------- */}
-      <section id="about">
+      <section id="about" className="section-light">
         <div className="about-inner">
           <motion.div
             className="about-img-wrap"
@@ -495,7 +495,7 @@ export default function LandingPage() {
       </div>
 
       {/* ---------------- Courses ---------------- */}
-      <section id="courses" className="courses-bg">
+      <section id="courses" className="section-light">
         <motion.div
           className="courses-header"
           initial="hidden"
@@ -577,7 +577,7 @@ export default function LandingPage() {
       </section>
 
       {/* ---------------- Gallery ---------------- */}
-      <section id="gallery" className="courses-bg">
+      <section id="gallery" className="section-light">
         <motion.div
           className="center"
           initial="hidden"
@@ -604,7 +604,7 @@ export default function LandingPage() {
       </section>
 
       {/* ---------------- Testimonials ---------------- */}
-      <section id="testimonials">
+      <section id="testimonials" className="section-cream">
         <div className="center">
           <p className="section-eyebrow">Customer Reviews</p>
           <h2 className="section-title">

@@ -32,6 +32,7 @@ import {
 import CoursesTab from './admin/CoursesTab';
 import InquiriesTab from './admin/InquiriesTab';
 import StudentsTab from './admin/StudentsTab';
+import SettingsTab from './admin/SettingsTab';
 
 const NAV_ITEMS = [
   { label: 'Dashboard', icon: LayoutGrid },
@@ -43,7 +44,8 @@ const NAV_ITEMS = [
 
 const STATUS_STYLES = {
   Pending: 'bg-amber-100 text-amber-700',
-  Enrolled: 'bg-emerald-100 text-emerald-700',
+  Approved: 'bg-emerald-100 text-emerald-700',
+  Rejected: 'bg-rose-100 text-rose-700',
 };
 
 export default function AdminDashboard() {
@@ -434,12 +436,7 @@ export default function AdminDashboard() {
           {active === 'Manage Courses' && <CoursesTab />}
           {active === 'Student Inquiries' && <InquiriesTab />}
           {active === 'Manage Students' && <StudentsTab />}
-          {active === 'Settings' && (
-            <div className="rounded-2xl bg-white p-5 shadow-sm">
-              <h2 className="text-sm font-bold text-slate-800">Settings</h2>
-              <p className="mt-2 text-sm text-slate-500">Nothing configurable here yet.</p>
-            </div>
-          )}
+          {active === 'Settings' && <SettingsTab />}
         </main>
       </div>
     </div>

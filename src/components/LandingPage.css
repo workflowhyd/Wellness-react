@@ -403,8 +403,40 @@
   margin-right: auto;
 }
 
-.sta-landing .courses-bg {
-  background: var(--sta-charcoal);
+/* ---- Light/cream section themes (mixed with the dark sections per the
+   reference design) — overriding the shared text-color custom properties
+   scopes the change to everything nested in the section automatically,
+   including inline styles that reference var(--sta-grey)/var(--sta-cream). */
+.sta-landing .section-light,
+.sta-landing .section-cream {
+  --sta-cream: #1b191e;
+  --sta-grey: #6b6558;
+}
+
+.sta-landing .section-light {
+  background: #fff;
+}
+
+.sta-landing .section-cream {
+  background: #f5efe3;
+}
+
+.sta-landing .section-light .section-title,
+.sta-landing .section-cream .section-title {
+  color: #17151a;
+}
+
+.sta-landing .section-light .section-title em,
+.sta-landing .section-cream .section-title em {
+  color: var(--sta-gold);
+}
+
+.sta-landing .section-cream .who-name {
+  color: var(--sta-gold);
+}
+
+.sta-landing .section-cream .dot {
+  background: rgba(27, 25, 30, 0.18);
 }
 
 /* ---- ABOUT ---- */
@@ -545,75 +577,51 @@
 
 .sta-landing .course-card {
   position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(201, 162, 75, 0.2);
-  aspect-ratio: 4 / 5;
-  display: block;
+  display: flex;
+  flex-direction: column;
   text-decoration: none;
   cursor: pointer;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(17, 16, 19, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.sta-landing .course-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(17, 16, 19, 0.15);
 }
 
 .sta-landing .course-card-img {
-  position: absolute;
-  inset: 0;
   width: 100%;
-  height: 100%;
+  height: 190px;
   object-fit: cover;
-  transition: transform 0.8s ease;
-}
-
-.sta-landing .course-card:hover .course-card-img {
-  transform: scale(1.07);
+  display: block;
 }
 
 .sta-landing .course-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 1.5rem;
-  background: linear-gradient(180deg, transparent 40%, rgba(11, 10, 12, 0.94) 100%);
-  transition: background 0.4s ease;
-}
-
-.sta-landing .course-card:hover .course-overlay {
-  background: linear-gradient(180deg, rgba(11, 10, 12, 0.2) 0%, rgba(11, 10, 12, 0.96) 100%);
+  padding: 1.2rem 1.3rem 1.4rem;
 }
 
 .sta-landing .course-overlay h3 {
   font-family: 'Cormorant Garamond', serif;
-  color: #fff;
-  font-size: 1.35rem;
-  margin-bottom: 0.3rem;
+  color: #17151a;
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .sta-landing .course-overlay p {
-  font-size: 0.82rem;
-  color: var(--sta-grey);
-  font-weight: 300;
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: all 0.45s ease;
-}
-
-.sta-landing .course-card:hover .course-overlay p {
-  max-height: 80px;
-  opacity: 1;
-  margin-bottom: 0.6rem;
+  display: none;
 }
 
 .sta-landing .course-overlay .view {
-  font-size: 0.68rem;
-  letter-spacing: 0.24em;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--sta-gold-light);
+  font-weight: 700;
+  color: var(--sta-gold);
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 0.3rem;
 }
 
 .sta-landing .course-overlay .view::after {
@@ -692,7 +700,8 @@
 .sta-landing .gallery-item {
   aspect-ratio: 1;
   overflow: hidden;
-  border: 1px solid rgba(201, 162, 75, 0.18);
+  box-shadow: 0 6px 22px rgba(17, 16, 19, 0.1);
+  border: 1px solid rgba(17, 16, 19, 0.06);
 }
 
 .sta-landing .gallery-item:nth-child(2),
