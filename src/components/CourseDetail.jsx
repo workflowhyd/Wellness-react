@@ -5,6 +5,9 @@ import { getCourseBySlug, getRelatedCourses } from '../lib/coursesData';
 import './LandingPage.css';
 import './CourseDetail.css';
 
+const markImgLoaded = (el) => el && el.classList.add('is-loaded');
+const revealImgOnLoad = (e) => markImgLoaded(e.currentTarget);
+
 export default function CourseDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -148,7 +151,15 @@ export default function CourseDetail() {
             {related.map((c) => (
               <Link className="course-card" to={`/courses/${c.slug}`} key={c.slug}>
                 {c.badge && <span className="course-badge">{c.badge}</span>}
-                <img className="course-card-img" src={c.image} alt={c.title} loading="lazy" decoding="async" />
+                <img
+                  className="course-card-img img-fade"
+                  src={c.image}
+                  alt={c.title}
+                  loading="lazy"
+                  decoding="async"
+                  ref={(el) => el?.complete && markImgLoaded(el)}
+                  onLoad={revealImgOnLoad}
+                />
                 <div className="course-overlay">
                   <h3>{c.title}</h3>
                   <p>{c.text}</p>

@@ -21,6 +21,13 @@ const reveal = {
   show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: 'easeOut' } },
 };
 
+// Lazy-loaded images start invisible via the .img-fade CSS class and fade in
+// once decoded, instead of snapping into view mid-scroll. The ref callback
+// covers images that are already cached/complete by the time React mounts
+// them (onLoad never fires for those), and onLoad covers the rest.
+const markImgLoaded = (el) => el && el.classList.add('is-loaded');
+const revealImgOnLoad = (e) => markImgLoaded(e.currentTarget);
+
 const MotionLink = motion.create(Link);
 
 const NAV_LINKS = [
@@ -464,11 +471,13 @@ export default function LandingPage() {
             variants={reveal}
           >
             <img
-              className="about-img-main"
+              className="about-img-main img-fade"
               src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&q=70&fm=webp&auto=format"
               alt="Trainer mentoring a student at Skill Training Academy"
               loading="lazy"
               decoding="async"
+              ref={(el) => el?.complete && markImgLoaded(el)}
+              onLoad={revealImgOnLoad}
             />
             <div className="about-img-badge">
               <div className="badge-num">7+</div>
@@ -550,11 +559,13 @@ export default function LandingPage() {
             >
               {course.badge && <span className="course-badge">{course.badge}</span>}
               <img
-                className="course-card-img"
+                className="course-card-img img-fade"
                 src={course.image}
                 alt={course.title}
                 loading="lazy"
                 decoding="async"
+                ref={(el) => el?.complete && markImgLoaded(el)}
+                onLoad={revealImgOnLoad}
               />
               <div className="course-overlay">
                 <h3>{course.title}</h3>
@@ -620,7 +631,15 @@ export default function LandingPage() {
         <div className="gallery-grid">
           {GALLERY_IMAGES.map((img) => (
             <div className="gallery-item" key={img.src}>
-              <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
+              <img
+                className="img-fade"
+                src={img.src}
+                alt={img.alt}
+                loading="lazy"
+                decoding="async"
+                ref={(el) => el?.complete && markImgLoaded(el)}
+                onLoad={revealImgOnLoad}
+              />
             </div>
           ))}
         </div>

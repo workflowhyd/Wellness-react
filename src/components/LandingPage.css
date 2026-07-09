@@ -366,6 +366,16 @@
   }
 }
 
+/* ---- Lazy image fade-in (avoids a pop/flash as images decode on scroll) ---- */
+.sta-landing .img-fade {
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.sta-landing .img-fade.is-loaded {
+  opacity: 1;
+}
+
 /* ---- SECTION SHARED ---- */
 .sta-landing section {
   padding: 5.5rem 6%;

@@ -2,7 +2,7 @@ export const COURSES = [
   {
     slug: 'beautician-course',
     badge: 'Popular',
-    image: 'https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=500&q=70&fm=webp&auto=format',
+    image: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=500&q=70&fm=webp&auto=format',
     tag: 'Salon Services',
     title: 'Beautician Course',
     text: 'Skin care, facials, threading, waxing and complete salon services taught hands-on from day one.',
@@ -46,7 +46,7 @@ export const COURSES = [
   },
   {
     slug: 'hair-styling-care',
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&q=70&fm=webp&auto=format',
+    image: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=500&q=70&fm=webp&auto=format',
     tag: 'Hair Care',
     title: 'Hair Styling & Care',
     text: 'Cutting, styling, colouring and hair treatments with live practice on real models.',
