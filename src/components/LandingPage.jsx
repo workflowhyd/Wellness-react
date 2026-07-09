@@ -119,12 +119,12 @@ const GALLERY_IMAGES = [
     alt: 'Student bridal makeup work',
   },
   {
-    src: 'https://images.unsplash.com/photo-1631730359585-38a4935cbec4?w=500&q=70&fm=webp&auto=format',
-    alt: 'Cosmetics and skincare products',
+    src: 'https://images.unsplash.com/photo-1552693673-1bf958298935?w=500&q=70&fm=webp&auto=format',
+    alt: 'Spa facial treatment session',
   },
   {
-    src: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=500&q=70&fm=webp&auto=format',
-    alt: 'Hair styling session',
+    src: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=500&q=70&fm=webp&auto=format',
+    alt: 'Spa and wellness relaxation space at the academy',
   },
   {
     src: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500&q=70&fm=webp&auto=format',
@@ -277,6 +277,22 @@ export default function LandingPage() {
     rootRef.current?.querySelector(`#${id}`)?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Swipe support for the hero slider on touch devices.
+  const heroTouchX = useRef(null);
+  const SWIPE_THRESHOLD = 40;
+
+  const handleHeroTouchStart = (e) => {
+    heroTouchX.current = e.touches[0].clientX;
+  };
+
+  const handleHeroTouchEnd = (e) => {
+    if (heroTouchX.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - heroTouchX.current;
+    heroTouchX.current = null;
+    if (deltaX > SWIPE_THRESHOLD) hero.goTo(hero.current - 1);
+    else if (deltaX < -SWIPE_THRESHOLD) hero.goTo(hero.current + 1);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError('');
@@ -358,40 +374,47 @@ export default function LandingPage() {
       )}
 
       {/* ---------------- Hero slider ---------------- */}
-      <header className="hero" id="home">
-        {HERO_SLIDES.map((slide, i) => (
-          <div className={`hero-slide ${i === hero.current ? 'active' : ''}`} key={slide.kicker}>
-            <img
-              className="hero-slide-img"
-              src={slide.image}
-              alt=""
-              loading={i === 0 ? 'eager' : 'lazy'}
-              decoding="async"
-            />
-            <div className="hero-slide-content">
-              <span className="hero-kicker">{slide.kicker}</span>
-              <h1>
-                {slide.before}
-                <em>{slide.emphasis}</em>
-                {slide.after}
-              </h1>
-              <p>{slide.text}</p>
-              {slide.ctaHref ? (
-                <a href={slide.ctaHref} className="btn-primary" target="_blank" rel="noreferrer">
-                  {slide.ctaLabel}
-                </a>
-              ) : (
-                <a
-                  href={`#${slide.ctaId}`}
-                  className="btn-primary"
-                  onClick={(e) => scrollToId(e, slide.ctaId)}
-                >
-                  {slide.ctaLabel}
-                </a>
-              )}
+      <header
+        className="hero"
+        id="home"
+        onTouchStart={handleHeroTouchStart}
+        onTouchEnd={handleHeroTouchEnd}
+      >
+        <div className="hero-track" style={{ transform: `translateX(-${hero.current * 100}%)` }}>
+          {HERO_SLIDES.map((slide, i) => (
+            <div className="hero-slide" key={slide.kicker}>
+              <img
+                className="hero-slide-img"
+                src={slide.image}
+                alt=""
+                loading={i === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+              <div className="hero-slide-content">
+                <span className="hero-kicker">{slide.kicker}</span>
+                <h1>
+                  {slide.before}
+                  <em>{slide.emphasis}</em>
+                  {slide.after}
+                </h1>
+                <p>{slide.text}</p>
+                {slide.ctaHref ? (
+                  <a href={slide.ctaHref} className="btn-primary" target="_blank" rel="noreferrer">
+                    {slide.ctaLabel}
+                  </a>
+                ) : (
+                  <a
+                    href={`#${slide.ctaId}`}
+                    className="btn-primary"
+                    onClick={(e) => scrollToId(e, slide.ctaId)}
+                  >
+                    {slide.ctaLabel}
+                  </a>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
         <button
           type="button"
           className="slider-arrow arrow-prev"

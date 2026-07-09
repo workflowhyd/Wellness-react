@@ -86,7 +86,7 @@ export const COURSES = [
   },
   {
     slug: 'spa-wellness-therapy',
-    image: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=500&q=70&fm=webp&auto=format',
+    image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&q=70&fm=webp&auto=format',
     tag: 'Spa & Therapy',
     title: 'Spa & Wellness Therapy',
     text: 'Body massage, aromatherapy and wellness therapies for a career in top spas and resorts.',
@@ -107,7 +107,7 @@ export const COURSES = [
   {
     slug: 'nail-art-extensions',
     badge: 'New',
-    image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=500&q=70&fm=webp&auto=format',
+    image: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?w=500&q=70&fm=webp&auto=format',
     tag: 'Nail Art',
     title: 'Nail Art & Extensions',
     text: 'Trending nail art, gel extensions and complete nail care techniques.',
@@ -127,7 +127,7 @@ export const COURSES = [
   },
   {
     slug: 'mehendi-art',
-    image: 'https://images.unsplash.com/photo-1600721391689-2564bb8055de?w=500&q=70&fm=webp&auto=format',
+    image: 'https://images.unsplash.com/flagged/photo-1557695742-6ddd2cd63a5d?w=500&q=70&fm=webp&auto=format',
     tag: 'Mehendi Art',
     title: 'Mehendi Art',
     text: 'Traditional and modern bridal mehendi with a booking-ready portfolio.',
@@ -147,7 +147,7 @@ export const COURSES = [
   },
   {
     slug: 'complete-diploma',
-    image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=500&q=70&fm=webp&auto=format',
+    image: 'https://images.unsplash.com/photo-1709477542149-f4e0e21d590b?w=500&q=70&fm=webp&auto=format',
     tag: 'Complete Diploma',
     title: 'Complete Diploma',
     text: 'Beauty, makeup, hair and wellness combined into one career-ready diploma.',
