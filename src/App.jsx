@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 // LandingPage is imported eagerly (not lazy) since it's the route almost
 // every visitor lands on directly — lazy-loading it added an extra
 // network round-trip on the critical path and measurably hurt mobile
@@ -13,7 +13,7 @@ const CourseDetail = lazy(() => import('./components/CourseDetail'));
 
 function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <div className="min-h-screen bg-white">
         <Suspense fallback={null}>
           <Routes>
@@ -25,7 +25,7 @@ function App() {
           </Routes>
         </Suspense>
       </div>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 

@@ -274,10 +274,8 @@ export default function LandingPage() {
     return () => observer.disconnect();
   }, []);
 
-  // Scrolls to an in-page section instead of using native `#id` href
-  // navigation, since HashRouter (src/App.jsx) uses the URL hash for
-  // routing — a plain `href="#about"` would be read as a route change,
-  // not an anchor scroll.
+  // Scrolls to an in-page section with smooth scrolling instead of the
+  // browser's native `#id` jump, and keeps the URL clean.
   const scrollToId = (e, id) => {
     e.preventDefault();
     setMobileOpen(false);
